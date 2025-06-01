@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --accent: #FF9763;
+  --dark: #0A0A0A;
+  --gray: #1A1A1A;
+  --light: #FFFFFF;
+  --light-gray: #F0F0F0;
+}
+
+body {
+  @apply bg-dark text-light font-manrope antialiased;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.btn {
+  @apply px-6 py-3 rounded-lg font-semibold transition-all duration-300;
+}
+
+.btn-primary {
+  @apply bg-accent text-dark hover:bg-opacity-90;
+}
+
+.input-field {
+  @apply w-full px-4 py-3 bg-gray rounded-lg border border-gray-700 focus:border-accent focus:outline-none text-light;
+}
