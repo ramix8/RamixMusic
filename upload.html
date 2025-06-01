@@ -1,0 +1,1775 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Загрузка релиза - Ramix Music</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="icon" href="https://i.postimg.cc/dVFvVqyz/image.png" type="image/png">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        :root {
+            --accent: #FF9763;
+            --dark: #0A0A0A;
+            --lighter-dark: #333;
+            --gray: #1A1A1A;
+            --light: #FFFFFF;
+            --light-gray: #F0F0F0;
+            --button-bg: linear-gradient(135deg, #FF9763, #FF6B6B);
+            --input-bg: rgba(255,255,255,0.1);
+            --input-border: rgba(255,255,255,0.2);
+            --select-bg: #0A0A0A;
+            --select-text: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--dark);
+            color: white;
+            margin: 0;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        /* Стили для полосы прокрутки */
+        body::-webkit-scrollbar,
+        .sidebar-nav::-webkit-scrollbar,
+        .app-content::-webkit-scrollbar,
+        *::-webkit-scrollbar {
+            width: 8px;
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        body::-webkit-scrollbar-thumb,
+        .sidebar-nav::-webkit-scrollbar-thumb,
+        .app-content::-webkit-scrollbar-thumb,
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--accent);
+            border-radius: 4px;
+        }
+
+        body::-webkit-scrollbar-track,
+        .sidebar-nav::-webkit-scrollbar-track,
+        .app-content::-webkit-scrollbar-track,
+        *::-webkit-scrollbar-track {
+            background-color: var(--dark);
+        }
+
+        /* Стили для основного контента */
+        .app-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4rem 2rem;
+            margin-left: 0;
+        }
+        
+        .content-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page-description {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .page-description h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-description h5 {
+            font-size: 1rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        @media (max-width: 1200px) {
+            .app-content {
+                margin-left: 0;
+            }
+        }
+
+        /* Стили для контейнера загрузки */
+        .upload-container {
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 151, 99, 0.1);
+        }
+        
+        /* Стили для табов */
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-tab {
+            background: none;
+            border: none;
+            padding: 12px 24px;
+            color: rgba(255,255,255,0.6);
+            font-size: 16px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tab.active {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        .nav-tab:not(.active):hover {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(20px); }
+        }
+
+        @keyframes modalClose {
+            0% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.8); }
+        }
+        
+        /* Стили для типа релиза */
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .section-description {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 1rem;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+            color: var(--light);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            user-select: none;
+        }
+
+        .radio-option.selected {
+            background: var(--accent);
+            color: var(--dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        .radio-option:hover:not(.selected) {
+            background: rgba(255, 151, 99, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* Стили для загрузки обложки */
+        .cover-upload input {
+            display: none;
+        }
+
+        .cover-wrapper {
+            width: 250px;
+            height: 250px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .cover-art {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            background: rgba(20, 20, 20, 0.9);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed rgba(255, 151, 99, 0.3);
+        }
+
+        .cover-art:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border-color: var(--accent);
+        }
+
+        .cover-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .cover-art span {
+            color: var(--light);
+            font-size: 0.9rem;
+            text-align: center;
+            position: absolute;
+            z-index: 1;
+            transition: opacity 0.3s ease;
+            opacity: 0.7;
+            padding: 0 1rem;
+        }
+
+        .cover-art:hover span {
+            opacity: 1;
+        }
+        
+        /* Стили для формы */
+        .form-input, select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        select {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        select optgroup, select option {
+            background: var(--dark);
+            color: white;
+        }
+
+        .form-input:focus, select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(255,151,99,0.2);
+            outline: none;
+        }
+
+        .grid-cols-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .text-xs {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* Стили для кнопки отправки */
+        .submit-btn {
+            background: linear-gradient(135deg, #FF9763, #FF6B6B);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(255,151,99,0.3);
+        }
+        
+        /* Стили для таблицы треков */
+        .tracks-table {
+            width: 100%;
+            margin-top: 1.5rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr 1.5fr 0.8fr;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 151, 99, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .th {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .table-body {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .track-row {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr 1.5fr 0.8fr;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .track-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .delete-btn {
+            color: #ff4444;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 68, 68, 0.1);
+        }
+        
+        /* Стили для кнопки добавления трека */
+        .upload-trigger-btn {
+            background: linear-gradient(135deg, rgba(255, 151, 99, 0.2), rgba(255, 107, 107, 0.2));
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: 1px solid rgba(255, 151, 99, 0.3);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .upload-trigger-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, rgba(255, 151, 99, 0.3), rgba(255, 107, 107, 0.3));
+            box-shadow: 0 5px 15px rgba(255, 151, 99, 0.15);
+        }
+
+        .upload-trigger-btn i {
+            font-size: 0.9rem;
+        }
+        
+        /* Модальное окно для трека */
+        #trackModal {
+            background: rgba(0, 0, 0, 0.75) !important;
+            backdrop-filter: blur(12px) saturate(180%) !important;
+        }
+
+        #trackModal .modal-track-content {
+            background: rgba(10, 10, 10, 0.75) !important;
+            border: 1px solid rgba(255, 151, 99, 0.15) !important;
+            box-shadow: 0 0 30px rgba(255, 151, 99, 0.12) !important;
+            max-width: 800px !important;
+            width: 90% !important;
+        }
+
+        #trackModal .form-input {
+            background: rgba(0, 0, 0, 0.2) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(4px);
+        }
+
+        #trackModal .section-title,
+        #trackModal .input-label {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Новые стили для выравнивания */
+        #trackModal .form-group {
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+
+        #trackModal .grid-cols-2 {
+            gap: 1rem;
+            align-items: start;
+        }
+
+        #trackModal .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+        
+        .track-name {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .play-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Стили для секции предпросмотра */
+        .preview-section {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            animation: fadeIn 0.4s;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .preview-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .preview-card h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .preview-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .preview-row span:first-child {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+        
+        /* Медиа-запросы для адаптивности */
+        @media (max-width: 768px) {
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+            }
+            
+            .table-header, .track-row {
+                grid-template-columns: 2fr 2fr 1fr;
+            }
+            
+            .table-header div:nth-child(4),
+            .table-header div:nth-child(5),
+            .track-row div:nth-child(4),
+            .track-row div:nth-child(5) {
+                display: none;
+            }
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 10px rgba(255,151,99,0.3); }
+            50% { box-shadow: 0 0 20px rgba(255,151,99,0.5); }
+            100% { box-shadow: 0 0 10px rgba(255,151,99,0.3); }
+        }
+
+        body.light-mode {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 220px;
+            background: var(--gray);
+            padding: 2rem 0.5rem;
+            transform: translateX(-100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.light-mode {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-logo {
+            width: 140px;
+            height: auto;
+            transition: opacity 0.3s;
+        }
+
+        .sidebar-nav {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 0 1rem;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li a {
+            display: flex;
+            align-items: center;
+            padding: 14px 1rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            margin: 4px 0;
+        }
+
+        .sidebar-nav li a.active {
+            background: var(--accent);
+            color: var(--dark);
+        }
+
+        .sidebar-nav li a i {
+            margin-right: 1rem;
+        }
+
+        .sidebar-nav li a:hover {
+            background: linear-gradient(90deg, rgba(255,151,99,0.1) 0%, rgba(255,151,99,0) 100%);
+            color: var(--accent);
+            transform: translateX(8px);
+        }
+
+        .sidebar-nav.light-mode li a {
+            color: var(--dark);
+        }
+
+        .sidebar-nav li.distribution a {
+            color: var(--accent);
+            background: transparent;
+        }
+
+        .sidebar-nav li a::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 0;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: height 0.3s ease;
+            display: none;
+        }
+
+        .sidebar-nav li a:hover::before {
+            height: 0;
+            display: none;
+        }
+
+        .sidebar-nav .submenu {
+            padding-left: 1rem;
+        }
+
+        .sidebar-nav .submenu li a {
+            padding: 10px 1rem;
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.6);
+            position: relative;
+        }
+
+        .sidebar-nav .submenu li a:hover {
+            color: var(--accent);
+        }
+
+        .sidebar-nav.light-mode .submenu li a {
+            color: rgba(0,0,0,0.6);
+        }
+
+        .extra-menu {
+            margin-top: auto;
+            padding-top: 4rem;
+        }
+
+        .extra-menu li a {
+            margin: 4px 0;
+        }
+
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .sidebar-footer.light-mode {
+            color: rgba(0,0,0,0.6);
+        }
+
+        .menu-toggle {
+            position: fixed;
+            left: 1.5rem;
+            top: 2rem;
+            z-index: 1000;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--accent);
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        .header-logo {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            height: 50px;
+            z-index: 999;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 1200px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .header-logo {
+                left: 5rem;
+            }
+        }
+
+        @media (min-width: 1201px) {
+            .sidebar {
+                transform: translateX(0);
+            }
+            
+            body {
+                padding-left: 220px;
+            }
+            
+            .header-logo {
+                display: none;
+            }
+        }
+
+        .account-menu {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--button-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .account-menu:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .account-menu span {
+            margin-right: 0.5rem;
+            color: var(--accent);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: var(--gray);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 0.8rem 1.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent);
+        }
+
+        .upload-header-button {
+            position: fixed;
+            top: 1.5rem;
+            right: 10rem;
+            background: var(--accent);
+            color: var(--dark);
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .upload-header-button {
+                right: 5rem;
+                padding: 0.6rem;
+            }
+            .upload-header-button span {
+                display: none;
+            }
+        }
+
+        .sidebar-nav .nested-submenu {
+            display: none;
+            padding-left: 1rem;
+            list-style: none;
+            margin-top: 0.5rem;
+        }
+
+        .sidebar-nav .nested-submenu.active {
+            display: block;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .sidebar-nav .has-submenu {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-nav .has-submenu:after {
+            content: '\f105';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            margin-left: auto;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-nav .has-submenu.active:after {
+            transform: rotate(90deg);
+        }
+
+        .sidebar-nav .nested-submenu li a {
+            padding: 10px 20px;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            display: block;
+        }
+
+        .sidebar-nav .nested-submenu li a:hover {
+            color: var(--accent);
+        }
+
+        /* Добавляем анимацию fadeIn */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Модальное окно для метаданных трека */
+        .modal-track {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.75) !important;
+            backdrop-filter: blur(12px) saturate(180%) !important;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .modal-track-content {
+            background: rgba(10, 10, 10, 0.75) !important;
+            border-radius: 20px;
+            padding: 1.5rem !important;
+            width: 90%;
+            max-width: 800px !important;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: var(--accent);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .form-input, select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        select {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        select optgroup, select option {
+            background: var(--dark);
+            color: white;
+        }
+
+        .form-input:focus, select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(255,151,99,0.2);
+            outline: none;
+        }
+
+        .grid-cols-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .text-xs {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* Стили для кнопки отправки */
+        .submit-btn {
+            background: linear-gradient(135deg, #FF9763, #FF6B6B);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(255,151,99,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Боковая панель -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="main.html">
+                <img src="https://i.postimg.cc/hJJc0YcN/ramix-logo.png" class="sidebar-logo" alt="Ramix Music">
+            </a>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="distribution"><a href="singles.html">Дистрибьюция</a>
+                    <ul class="submenu">
+                        <li>
+                            <a href="#" class="has-submenu">
+                                <i class="fas fa-compact-disc"></i>
+                                Ваши синглы и альбомы
+                            </a>
+                            <ul class="nested-submenu">
+                                <li><a href="releases.html">Релизы</a></li>
+                                <li><a href="moderation.html">На модерации</a></li>
+                                <li><a href="drafts.html">Черновики</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="statistics.html"><i class="fas fa-chart-line"></i>Статистика</a></li>
+                        <li><a href="promo.html"><i class="fas fa-bullhorn"></i>Промо</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="extra-menu-wrapper">
+            <nav class="sidebar-nav extra-menu">
+                <ul>
+                    <li><a href="balance.html"><i class="fas fa-wallet"></i>Баланс</a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i>Настройки</a></li>
+                    <li><a href="support.html"><i class="fas fa-headset"></i>Тех. поддержка</a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                &copy; 2025 Ramix Music
+            </div>
+        </div>
+    </aside>
+        
+        <button id="menu-toggle" class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+    <img src="https://i.postimg.cc/hJJc0YcN/ramix-logo.png" class="header-logo" id="header-logo" alt="Ramix Music">
+    
+    <a href="upload.html" class="upload-header-button">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <span>Загрузить</span>
+    </a>
+
+        <div class="account-menu" id="account-menu">
+        <span>Аккаунт</span>
+        <i class="fas fa-user"></i>
+        <div class="dropdown-menu" id="dropdown-menu">
+            <a href="profile.html">Профиль</a>
+            <a href="../auth/login.html">Выйти</a>
+        </div>
+        </div>
+        
+        <!-- Основной контент -->
+        <div class="app-content">
+            <div class="content-wrapper">
+                <div class="page-description">
+                    <h1>Загрузка релиза</h1>
+                    <h5>Заполните информацию о вашем новом релизе</h5>
+    </div>
+
+    <div class="upload-container">
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-target="releaseForm">Редактор релиза</button>
+            <button class="nav-tab" data-target="previewSection" id="previewBtn">Проверка данных</button>
+        </div>
+
+        <!-- Основная форма редактирования -->
+        <div id="releaseForm" class="release-section">
+            <div class="section release-type">
+                <div class="section-title">Тип релиза</div>
+                <div class="section-description">Выберите тип вашего релиза</div>
+                <div class="radio-group">
+                                <div class="radio-option" data-value="single">Сингл</div>
+                                <div class="radio-option" data-value="ep">EP</div>
+                                <div class="radio-option" data-value="album">Альбом</div>
+                </div>
+            </div>
+
+            <div class="section cover-upload">
+                <div class="section-title">Обложка</div>
+                <div class="section-description">Загрузите обложку вашего релиза (3000x3000px, JPG)</div>
+                <div class="cover-wrapper">
+                                <input type="file" id="cover-upload" accept="image/jpeg" hidden>
+                        <label for="cover-upload" class="cover-art">
+                                    <img class="cover-preview" id="cover-preview">
+                            <span>Нажмите, чтобы загрузить обложку</span>
+                        </label>
+                </div>
+            </div>
+
+            <div class="section main-info">
+                <div class="section-title">Основные данные</div>
+                <div class="grid-cols-2">
+                                <div style="grid-column: span 2;">
+                                    <label class="input-label">Название релиза</label>
+                                    <input type="text" class="form-input" id="release-name" placeholder="Введите название релиза..." required>
+                        <p class="text-xs">Название релиза не должно содержать грубых и политических высказываний.</p>
+                    </div>
+
+                                <div>
+                                    <label class="input-label">Основной жанр</label>
+                                    <select id="genre" class="form-input">
+                            <optgroup label="Рэп/RnB">
+                                <option value="1">Рэп</option>
+                                <option value="3">Трэп</option>
+                                <option value="4">RnB</option>
+                                <option value="9">Соул</option>
+                                <option value="17">Поп Рэп</option>
+                                <option value="18">Old School Рэп</option>
+                            </optgroup>
+                            <optgroup label="Электронная музыка">
+                                <option value="14">Электронная музыка</option>
+                                <option value="16">Техно</option>
+                                <option value="19">Экспериментальная</option>
+                                <option value="20">Drum &amp; Bass</option>
+                                <option value="21">House</option>
+                                <option value="7">Другое</option>
+                            </optgroup>
+                            <optgroup label="Рок">
+                                <option value="22">Акустика</option>
+                                <option value="11">Альтернатива</option>
+                                <option value="23">Поп Рок</option>
+                                <option value="24">Панк</option>
+                                <option value="6">Инди</option>
+                                <option value="5">Рок</option>
+                                <option value="10">Метал</option>
+                            </optgroup>
+                            <option value="2">Поп</option>
+                            <option value="15">Классическая</option>
+                            <option value="13">Фолк</option>
+                            <option value="8">Саундтрек</option>
+                        </select>
+                    </div>
+                    
+                                <div>
+                                    <label class="input-label">Язык метаданных</label>
+                                    <select class="form-input" id="language">
+                                        <option value="ru">Русский</option>
+                                        <option value="en">Английский</option>
+                                        <option value="other">Другое</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section track-manager">
+                <div class="section-title">Управление треками</div>
+                
+                <div class="section">
+                    <div class="audio-dropzone" id="audio-dropzone">
+                        <div class="dropzone-content">
+                                        <button class="upload-trigger-btn" id="add-track-btn">
+                                <i class="fas fa-plus-circle"></i>
+                                Добавить трек
+                            </button>
+                    </div>
+                </div>
+
+                <div class="tracks-table">
+                    <div class="table-header">
+                        <div class="th">Название трека</div>
+                                        <div class="th">Исполнители</div>
+                                        <div class="th">Битмейкер</div>
+                                        <div class="th">Автор</div>
+                        <div class="th">Отрывок для TikTok</div>
+                        <div class="th">Действия</div>
+                    </div>
+                    <div class="table-body" id="tracks-list">
+                        <!-- Треки будут добавляться здесь динамически -->
+                                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Секция предпросмотра -->
+        <div id="previewSection" class="preview-section" style="display: none;">
+            <div class="section-title">Проверка данных релиза</div>
+            
+            <div class="preview-grid">
+                <div class="preview-card">
+                                <h3><i class="fas fa-info-circle"></i> Основная информация</h3>
+                    <div class="preview-row">
+                        <span>Тип релиза:</span>
+                        <span id="preview-release-type">Не указано</span>
+                    </div>
+                    <div class="preview-row">
+                        <span>Название:</span>
+                        <span id="preview-release-name">Не указано</span>
+                    </div>
+                    <div class="preview-row">
+                        <span>Жанр:</span>
+                        <span id="preview-genre">Не выбран</span>
+                    </div>
+                    <div class="preview-row">
+                        <span>Язык метаданных:</span>
+                        <span id="preview-lang">Русский</span>
+                    </div>
+                </div>
+
+                <div class="preview-card">
+                                <h3><i class="fas fa-image"></i> Обложка релиза</h3>
+                    <div class="cover-wrapper" style="width: 200px; height: 200px; margin: 0 auto;">
+                        <img id="preview-cover-image" class="cover-preview" style="display: none;">
+                        <span id="preview-cover-text" style="display: block;">Обложка не загружена</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-card">
+                            <h3><i class="fas fa-music"></i> Треки</h3>
+                <div class="preview-table">
+                    <div class="table-header">
+                        <div class="th">Название</div>
+                        <div class="th">Исполнители</div>
+                        <div class="th">Битмейкер</div>
+                        <div class="th">Автор</div>
+                        <div class="th">TikTok отрывок</div>
+                    </div>
+                                <div class="table-body" id="preview-tracks-list">
+                                    <!-- Треки будут добавляться здесь динамически -->
+                                </div>
+                </div>
+            </div>
+
+            <div class="preview-actions">
+                <button class="submit-btn" id="submit-release-btn">
+                    <i class="fas fa-rocket"></i>
+                                Отправить релиз
+                </button>
+                <button class="submit-btn" id="edit-release-btn" style="background: #555; margin-left: 1rem;">
+                    <i class="fas fa-edit"></i>
+                    Редактировать
+                </button>
+            </div>
+        </div>
+    </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления трека -->
+    <div class="modal-track" id="trackModal">
+        <div class="modal-track-content">
+            <div class="modal-header">
+                <h2 class="section-title">Добавить трек</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="grid-cols-2 gap-xl">
+                    <div class="form-group">
+                        <label class="input-label">Название трека*</label>
+                        <input type="text" class="form-input" id="track-name" placeholder="Введите название трека" required>
+                    </div>
+                    
+
+                    <div class="form-group">
+                        <label class="input-label">Исполнители*</label>
+                        <input type="text" class="form-input" id="track-artists" placeholder="Артист 1, Артист 2">
+                    </div>
+                </div>
+
+                <div class="grid-cols-2 gap-xl">
+                    <div class="form-group">
+                        <label class="input-label">ФИО битмейкера*</label>
+                        <input type="text" class="form-input" id="track-producer" placeholder="Иванов Иван Иванович">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="input-label">ФИО автора*</label>
+                        <input type="text" class="form-input" id="track-author" placeholder="Петров Петр Петрович">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="input-label">Текст песни*</label>
+                    <textarea class="form-input" id="track-lyrics" rows="4" 
+                        placeholder="Введите текст или напишите «текст отсутствует»"></textarea>
+                </div>
+
+                <div class="grid-cols-2 gap-xl">
+                    <div class="form-group">
+                        <label class="input-label">Отрывок для TikTok*</label>
+                        <input type="text" class="form-input" id="track-tiktok" placeholder="00:15 - 00:30">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="input-label">Нецензурная лексика</label>
+                        <select class="form-input" id="track-explicit">
+                            <option value="no">Нет</option>
+                            <option value="yes">Есть</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="audio-upload-section">
+                    <label class="upload-trigger-btn">
+                        <i class="fas fa-file-audio"></i>
+                        <span>Загрузить WAV файл</span>
+                        <input type="file" accept=".wav" hidden id="wav-upload">
+                    </label>
+                    <div class="file-name" id="filename-display">Файл не выбран</div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="submit-btn" id="save-track-btn">Сохранить трек</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="audio-player-container"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Глобальные переменные для управления аудио
+        let currentAudio = null;
+        let currentPlayButton = null;
+        
+        // Обработчики событий после загрузки DOM
+        document.addEventListener('DOMContentLoaded', function() {
+            // Обработка боковой панели и меню аккаунта
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menu-toggle');
+            const accountMenu = document.getElementById('account-menu');
+            const dropdownMenu = document.getElementById('dropdown-menu');
+
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+            });
+
+            accountMenu.addEventListener('click', (event) => {
+                event.stopPropagation(); // Останавливаем всплытие события
+                dropdownMenu.classList.toggle('active');
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!accountMenu.contains(event.target)) {
+                    dropdownMenu.classList.remove('active');
+                }
+            });
+
+            // Добавляем обработчики для вложенных подменю
+            document.querySelectorAll('.has-submenu').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    this.classList.toggle('active');
+                    
+                    // Находим ближайшее вложенное подменю
+                    const nestedSubmenu = this.closest('li').querySelector('.nested-submenu');
+                    if (nestedSubmenu) {
+                        nestedSubmenu.classList.toggle('active');
+                    }
+                });
+            });
+            
+            // Выбор типа релиза
+            document.querySelectorAll('.radio-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.radio-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Загрузка обложки
+            const coverUpload = document.getElementById('cover-upload');
+            const coverPreview = document.getElementById('cover-preview');
+
+            coverUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // Проверка формата
+                if (!file.type.match('image/jpeg')) {
+                    alert('Ошибка: Обложка должна быть в формате JPG');
+                    this.value = '';
+                    return;
+                }
+
+                // Проверка размера (создаем временное изображение)
+                const img = new Image();
+                img.onload = () => {
+                    if (img.width !== 3000 || img.height !== 3000) {
+                        alert('Рекомендуемый размер обложки: 3000x3000 пикселей');
+                    }
+                    
+                    // Отображаем предпросмотр
+                    coverPreview.src = URL.createObjectURL(file);
+                    coverPreview.style.display = 'block';
+                    coverPreview.closest('.cover-art').querySelector('span').style.display = 'none';
+                };
+                
+                img.src = URL.createObjectURL(file);
+            });
+
+            // Открытие модального окна для добавления трека
+            document.getElementById('add-track-btn').addEventListener('click', function() {
+                document.getElementById('trackModal').style.display = 'flex';
+                
+                // Сбрасываем поля формы
+                document.getElementById('track-name').value = '';
+                document.getElementById('track-artists').value = '';
+                document.getElementById('track-producer').value = '';
+                document.getElementById('track-author').value = '';
+                document.getElementById('track-lyrics').value = '';
+                document.getElementById('track-tiktok').value = '';
+                document.getElementById('track-explicit').value = 'no';
+                document.getElementById('wav-upload').value = '';
+                document.getElementById('filename-display').textContent = 'Файл не выбран';
+            });
+
+            // Закрытие модального окна
+            document.querySelector('.close-modal').addEventListener('click', function() {
+                document.getElementById('trackModal').style.display = 'none';
+            });
+            
+            // Отображение имени выбранного WAV файла
+            document.getElementById('wav-upload').addEventListener('change', function() {
+                const fileName = this.files[0] ? this.files[0].name : 'Файл не выбран';
+                document.getElementById('filename-display').textContent = fileName;
+            });
+
+            // Добавление трека в таблицу
+            document.getElementById('save-track-btn').addEventListener('click', function() {
+                const trackName = document.getElementById('track-name').value;
+                const trackArtists = document.getElementById('track-artists').value;
+                const trackProducer = document.getElementById('track-producer').value;
+                const trackAuthor = document.getElementById('track-author').value;
+                const trackTiktok = document.getElementById('track-tiktok').value;
+                const fileInput = document.getElementById('wav-upload');
+
+                // Проверка обязательных полей
+                if (!trackName || !trackArtists || !trackProducer || !trackAuthor || !trackTiktok) {
+                    alert('Пожалуйста, заполните все обязательные поля');
+                    return;
+                }
+                
+                if (!fileInput.files[0]) {
+                    alert('Пожалуйста, загрузите WAV файл');
+                    return;
+                }
+                
+                // Создание аудио URL для предпросмотра
+                const audioUrl = URL.createObjectURL(fileInput.files[0]);
+                
+                // Добавляем трек в таблицу
+                addTrackToTable({
+                    name: trackName,
+                    artists: trackArtists,
+                    producer: trackProducer,
+                    author: trackAuthor,
+                    tiktok: trackTiktok,
+                    audioUrl: audioUrl
+                });
+                
+                // Закрываем модальное окно
+                document.getElementById('trackModal').style.display = 'none';
+            });
+
+            // Переключение между табами формы и предпросмотра
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    if (this.classList.contains('active')) return;
+                    
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const targetId = this.dataset.target;
+                    document.querySelectorAll('#releaseForm, #previewSection').forEach(section => {
+                        section.style.display = section.id === targetId ? 'block' : 'none';
+                    });
+                    
+                    // Если переходим на вкладку предпросмотра, обновляем данные
+                    if (targetId === 'previewSection') {
+                        const errors = validateReleaseForm();
+                        
+                        if (errors.length > 0) {
+                            alert('Ошибки:\n' + errors.join('\n'));
+                            
+                            // Возвращаемся на вкладку формы
+                            document.querySelector('[data-target="releaseForm"]').classList.add('active');
+                            this.classList.remove('active');
+                            document.getElementById('releaseForm').style.display = 'block';
+                            document.getElementById('previewSection').style.display = 'none';
+                            return;
+                        }
+                        
+                        updatePreviewData();
+                    }
+                });
+            });
+
+            // Кнопка редактирования в предпросмотре
+            document.getElementById('edit-release-btn').addEventListener('click', function() {
+                document.querySelector('[data-target="releaseForm"]').click();
+            });
+
+            // Кнопка отправки релиза
+            document.getElementById('submit-release-btn').addEventListener('click', function() {
+                if (confirm('Вы уверены, что хотите отправить релиз на модерацию?')) {
+                    submitRelease();
+                }
+            });
+        });
+
+        // Функция добавления трека в таблицу
+        function addTrackToTable(trackData) {
+            const tracksList = document.getElementById('tracks-list');
+            const trackRow = document.createElement('div');
+            trackRow.className = 'track-row';
+            
+            trackRow.innerHTML = `
+                <div class="track-name">
+                    ${trackData.name}
+                    <button class="play-btn" onclick="togglePlay(this)" data-src="${trackData.audioUrl}">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+                <div>${trackData.artists}</div>
+                <div>${trackData.producer}</div>
+                <div>${trackData.author}</div>
+                <div>${trackData.tiktok}</div>
+                <div>
+                    <button class="delete-btn" onclick="deleteTrack(this.parentElement.parentElement)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            
+            tracksList.appendChild(trackRow);
+        }
+
+        // Функция воспроизведения аудио
+        function togglePlay(btn) {
+            const audioUrl = btn.dataset.src;
+            
+            if (currentAudio && !currentAudio.paused) {
+                // Останавливаем текущее воспроизведение
+                currentAudio.pause();
+                currentPlayButton.querySelector('i').classList.replace('fa-pause', 'fa-play');
+                
+                if (currentAudio.src === audioUrl) {
+                    // Если кликнули на ту же кнопку - просто останавливаем
+                    currentAudio = null;
+                    currentPlayButton = null;
+                    return;
+                }
+            }
+
+            // Создаем новый аудиообъект
+            currentAudio = new Audio(audioUrl);
+            currentPlayButton = btn;
+            
+            currentAudio.play();
+            btn.querySelector('i').classList.replace('fa-play', 'fa-pause');
+            
+            // Обработчик окончания воспроизведения
+            currentAudio.onended = () => {
+                btn.querySelector('i').classList.replace('fa-pause', 'fa-play');
+                currentAudio = null;
+                currentPlayButton = null;
+            };
+        }
+
+        // Функция удаления трека
+        function deleteTrack(trackRow) {
+            const playButton = trackRow.querySelector('.play-btn');
+            
+            // Если удаляемый трек сейчас играет
+            if (currentPlayButton === playButton) {
+                currentAudio.pause();
+                currentAudio = null;
+                currentPlayButton = null;
+            }
+            
+            trackRow.remove();
+        }
+        
+        // Валидация формы перед предпросмотром
+        function validateReleaseForm() {
+            const errors = [];
+                    
+            if (!document.querySelector('.radio-option.selected')) {
+                errors.push('• Выберите тип релиза');
+            }
+                    
+            const coverPreview = document.getElementById('cover-preview');
+            if (!coverPreview.src || coverPreview.style.display === 'none') {
+                errors.push('• Загрузите обложку релиза');
+            }
+                    
+            if (!document.getElementById('release-name').value.trim()) {
+                errors.push('• Введите название релиза');
+            }
+                    
+            if (document.getElementById('tracks-list').children.length === 0) {
+                errors.push('• Добавьте минимум один трек');
+            }
+                    
+            return errors;
+        }
+                    
+        // Обновление данных предпросмотра
+        function updatePreviewData() {
+            // Основная информация
+            const releaseType = document.querySelector('.radio-option.selected')?.textContent || 'Не выбрано';
+            document.getElementById('preview-release-type').textContent = releaseType;
+            
+            document.getElementById('preview-release-name').textContent = 
+                document.getElementById('release-name').value || 'Не указано';
+            
+            document.getElementById('preview-genre').textContent = 
+                document.getElementById('genre').selectedOptions[0].text || 'Не выбран';
+            
+            document.getElementById('preview-lang').textContent = 
+                document.getElementById('language').selectedOptions[0].text || 'Русский';
+
+            // Обложка
+            const coverPreview = document.getElementById('cover-preview');
+            if (coverPreview.src) {
+                document.getElementById('preview-cover-image').src = coverPreview.src;
+                document.getElementById('preview-cover-image').style.display = 'block';
+                document.getElementById('preview-cover-text').style.display = 'none';
+            }
+
+            // Треки
+            const tracksList = document.getElementById('preview-tracks-list');
+            tracksList.innerHTML = '';
+            
+            document.querySelectorAll('#tracks-list .track-row').forEach(track => {
+                const previewRow = document.createElement('div');
+                previewRow.className = 'track-row';
+                
+                previewRow.innerHTML = `
+                    <div>${track.querySelector('.track-name').textContent.trim()}</div>
+                    <div>${track.children[1].textContent}</div>
+                    <div>${track.children[2].textContent}</div>
+                    <div>${track.children[3].textContent}</div>
+                    <div>${track.children[4].textContent}</div>
+                `;
+                
+                tracksList.appendChild(previewRow);
+            });
+        }
+
+        // Функция отправки релиза
+        function submitRelease() {
+            // Сбор данных релиза
+            const releaseData = {
+                type: document.querySelector('.radio-option.selected').dataset.value,
+                name: document.getElementById('release-name').value,
+                genre: document.getElementById('genre').value,
+                language: document.getElementById('language').value,
+                coverImage: document.getElementById('cover-upload').files[0],
+                tracks: []
+            };
+
+            // Сбор данных о треках
+            document.querySelectorAll('#tracks-list .track-row').forEach(track => {
+                releaseData.tracks.push({
+                    name: track.querySelector('.track-name').textContent.trim(),
+                    artists: track.children[1].textContent,
+                    producer: track.children[2].textContent,
+                    author: track.children[3].textContent,
+                    tiktokClip: track.children[4].textContent,
+                    audioFile: track.querySelector('.play-btn').dataset.src
+                });
+            });
+                
+            // Отправка данных на сервер (имитация)
+            console.log('Отправка релиза:', releaseData);
+            
+            // В реальном приложении здесь будет запрос к API
+            setTimeout(() => {
+                alert('Релиз успешно отправлен на модерацию!');
+                window.location.href = 'main.html';
+            }, 1500);
+        }
+    </script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
+    
+    <!-- Подключаем наши скрипты -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация аутентификации
+            checkAuthState(user => {
+                if (!user) {
+                    window.location.href = '../auth/login.html';
+                }
+            });
+            
+            // Обработка боковой панели на мобильных устройствах
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (menuToggle && sidebar) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                    menuToggle.classList.toggle('active');
+                });
+            }
+      });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Промо - Ramix Music</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #FF9763;
+            --dark: #0A0A0A;
+            --gray: #1A1A1A;
+            --light: #FFFFFF;
+            --light-gray: #F0F0F0;
+            --button-bg: rgba(255,255,255,0.1);
+            --bg-dark: #121212;
+            --input-bg: #1E1E1E;
+            --accent-color: #7B68EE;
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255,255,255,0.7);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--bg-dark);
+            color: white;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--accent);
+            border-radius: 4px;
+        }
+
+        .app-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4rem 2rem;
+        }
+
+        .content-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-description {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-description h1 {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+
+        .page-description h5 {
+            font-size: 1rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .page-description .attention {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .promo-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .promo-card {
+            background: var(--gray);
+            border: none;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            width: 200px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .promo-card img {
+            width: 70%;
+            border-radius: 8px;
+        }
+
+        .promo-card h5 {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .promo-card a {
+            display: inline-block;
+            background: var(--button-bg);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: transform 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .promo-card a:hover {
+            transform: scale(1.05);
+        }
+
+        .promo-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .badge {
+            background: var(--accent);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 220px;
+            background: var(--gray);
+            padding: 2rem 0.5rem;
+            transform: translateX(-100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.light-mode {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-logo {
+            width: 140px;
+            height: auto;
+            transition: opacity 0.3s;
+        }
+
+        .sidebar-nav {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 0 1rem;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li a {
+            display: flex;
+            align-items: center;
+            padding: 14px 1rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            margin: 4px 0;
+        }
+
+        .sidebar-nav li a.active {
+            background: var(--accent);
+            color: var(--dark);
+        }
+
+        .sidebar-nav li a i {
+            margin-right: 1rem;
+        }
+
+        .sidebar-nav li a:hover {
+            background: linear-gradient(90deg, rgba(255,151,99,0.1) 0%, rgba(255,151,99,0) 100%);
+            color: var(--accent);
+            transform: translateX(8px);
+        }
+
+        .sidebar-nav.light-mode li a {
+            color: var (--dark);
+        }
+
+        .sidebar-nav li.distribution a {
+            color: var(--accent);
+            background: transparent;
+        }
+
+        .sidebar-nav li a::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 0;
+            background: var(--accent);
+            border-radius: 2px;
+            transition: height 0.3s ease;
+            display: none;
+        }
+
+        .sidebar-nav li a:hover::before {
+            height: 0;
+            display: none;
+        }
+
+        .sidebar-nav .submenu {
+            padding-left: 1rem;
+        }
+
+        .sidebar-nav .submenu li a {
+            padding: 10px 1rem;
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.6);
+            position: relative;
+        }
+
+        .sidebar-nav .submenu li a:hover {
+            color: var(--accent);
+        }
+
+        .sidebar-nav.light-mode .submenu li a {
+            color: rgba(0,0,0,0.6);
+        }
+
+        .extra-menu {
+            margin-top: auto;
+            padding-top: 4rem;
+        }
+
+        .extra-menu li a {
+            margin: 4px 0;
+        }
+
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .sidebar-footer.light-mode {
+            color: rgba(0,0,0,0.6);
+        }
+
+        .menu-toggle {
+            position: fixed;
+            left: 1.5rem;
+            top: 2rem;
+            z-index: 1000;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var (--accent);
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        .header-logo {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            height: 50px;
+            z-index: 999;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 1200px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .header-logo {
+                left: 5rem;
+            }
+        }
+
+        @media (min-width: 1201px) {
+            .sidebar {
+                transform: translateX(0);
+            }
+            
+            body {
+                padding-left: 220px;
+            }
+            
+            .header-logo {
+                display: none;
+            }
+        }
+
+        .account-menu {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--button-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .account-menu:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .account-menu span {
+            margin-right: 0.5rem;
+            color: var(--accent);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: var(--gray);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 0.8rem 1.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent);
+        }
+
+        .upload-header-button {
+            position: fixed;
+            top: 1.5rem;
+            right: 10rem;
+            background: var(--accent);
+            color: var(--dark);
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .upload-header-button {
+                right: 5rem;
+                padding: 0.6rem;
+            }
+            .upload-header-button span {
+                display: none;
+            }
+        }
+
+        .sidebar-nav .nested-submenu {
+            display: none;
+            padding-left: 1rem;
+            list-style: none;
+            margin-top: 0.5rem;
+        }
+
+        .sidebar-nav .nested-submenu.active {
+            display: block;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .sidebar-nav .has-submenu {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-nav .has-submenu:after {
+            content: '\f105';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            margin-left: auto;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-nav .has-submenu.active:after {
+            transform: rotate(90deg);
+        }
+
+        .sidebar-nav .nested-submenu li a {
+            padding: 10px 20px;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            display: block;
+        }
+
+        .sidebar-nav .nested-submenu li a:hover {
+            color: var(--accent);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .settings-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .settings-wrapper {
+            background: rgba(10, 10, 10, 0.75);
+            border: 1px solid rgba(255, 151, 99, 0.15);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            backdrop-filter: blur(15px) saturate(180%);
+            border-radius: 24px;
+            padding: 4rem;
+            transition: all 0.4s ease;
+        }
+
+        .settings-wrapper:hover {
+            box-shadow: 0 25px 60px rgba(255, 151, 99, 0.1);
+        }
+
+        .settings-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .settings-header h1 {
+            font-size: 2.8rem;
+            color: #FF9763;
+            margin-bottom: 1rem;
+        }
+
+        .header-accent {
+            height: 3px;
+            width: 150px;
+            background: #FF9763;
+            margin: 0 auto 2rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-field label {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 0.75rem;
+            color: var(--accent);
+            font-weight: 500;
+            font-size: 0.9rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-field label i {
+            color: white;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input,
+        .input-wrapper select {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .input-wrapper input:focus,
+        .input-wrapper select:focus {
+            border-color: rgba(255, 151, 99, 0.4);
+            box-shadow: 0 0 15px rgba(255, 151, 99, 0.2);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: rgba(255, 151, 99, 0.6);
+            cursor: pointer;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .save-changes {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, rgba(255, 151, 99, 0.2), rgba(255, 107, 107, 0.2));
+            border: 1px solid rgba(255, 151, 99, 0.3);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 15px;
+            transition: all 0.4s ease;
+        }
+
+        .save-changes:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 151, 99, 0.3);
+        }
+
+        .save-changes i {
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .google-auth-info {
+            margin-top: 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .google-auth-label {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+        }
+
+        .google-logo {
+            width: 30px;
+            height: 30px;
+        }
+
+        .google-auth-warning {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #FF9763;
+            font-size: 0.9rem;
+        }
+
+        .google-auth-warning i {
+            font-size: 1.2rem;
+        }
+
+        .google-disabled-field[data-tooltip] {
+            position: relative;
+            cursor: not-allowed;
+        }
+
+        .google-disabled-field[data-tooltip]:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            z-index: 10;
+            opacity: 0.9;
+        }
+
+        .custom-tooltip {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            z-index: 1000;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .google-logo {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .google-auth-info {
+            margin-top: 2rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .google-auth-label {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .telegram-notifications {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 151, 99, 0.15);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .telegram-notifications-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .telegram-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .telegram-text {
+            flex-grow: 1;
+        }
+
+        .telegram-text h3 {
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .telegram-text p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .enable-telegram-notifications {
+            background: linear-gradient(135deg, rgba(255, 151, 99, 0.2), rgba(255, 107, 107, 0.2));
+            border: 1px solid rgba(255, 151, 99, 0.3);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .enable-telegram-notifications:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 151, 99, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <button id="menu-toggle" class="menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="main.html">
+                <img src="https://i.postimg.cc/hJJc0YcN/ramix-logo.png" class="sidebar-logo" alt="Ramix Music">
+            </a>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="distribution"><a href="singles.html">Дистрибьюция</a>
+                    <ul class="submenu">
+                        <li>
+                            <a href="#" class="has-submenu">
+                                <i class="fas fa-compact-disc"></i>
+                                Ваши синглы и альбомы
+                            </a>
+                            <ul class="nested-submenu">
+                                <li><a href="releases.html">Релизы</a></li>
+                                <li><a href="moderation.html">На модерации</a></li>
+                                <li><a href="drafts.html">Черновики</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="statistics.html"><i class="fas fa-chart-line"></i>Статистика</a></li>
+                        <li><a href="promo.html"><i class="fas fa-bullhorn"></i>Промо</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="extra-menu-wrapper">
+            <nav class="sidebar-nav extra-menu">
+                <ul>
+                    <li><a href="balance.html"><i class="fas fa-wallet"></i>Баланс</a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i>Настройки</a></li>
+                    <li><a href="support.html"><i class="fas fa-headset"></i>Тех. поддержка</a></li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                &copy; 2025 Ramix Music
+            </div>
+        </div>
+    </aside>
+
+    <a href="main.html">
+        <img src="https://i.postimg.cc/hJJc0YcN/ramix-logo.png" class="header-logo" id="header-logo" alt="Ramix Music">
+    </a>
+    
+    <a href="upload.html" class="upload-header-button">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <span>Загрузить</span>
+    </a>
+
+    <div class="account-menu" id="account-menu">
+        <span>Аккаунт</span>
+        <i class="fas fa-user"></i>
+        <div class="dropdown-menu" id="dropdown-menu">
+            <a href="profile.html">Профиль</a>
+            <a href="logout.html">Выйти</a>
+        </div>
+    </div>
+
+    <div class="app-content">
+        <div class="content-wrapper">
+            <div class="page-description">
+                <h1>Настройки</h1>
+                <h5>Управление вашим аккаунтом</h5>
+            </div>
+
+            <div class="settings-container">
+                <div class="settings-wrapper">
+                    <div class="settings-header">
+                        <h1 style="color: #FF9763;">Аккаунт</h1>
+                        <div class="header-accent"></div>
+                        <p>Управление профилем</p>
+                    </div>
+
+                    <div class="auth-container">
+                        <div class="standard-auth">
+                            <form class="settings-form" id="profileSettings">
+                                <div class="form-grid">
+                                    <div class="form-field">
+                                        <label>
+                                            <i class="fas fa-user"></i>
+                                            Логин
+                                        </label>
+                                        <div class="input-wrapper">
+                                            <input 
+                                                type="text" 
+                                                id="username" 
+                                                value="ram1xbaby"
+                                                placeholder="Введите логин"
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <div class="form-field">
+                                        <label>
+                                            <i class="fas fa-envelope"></i>
+                                            Email адрес
+                                        </label>
+                                        <div class="input-wrapper">
+                                            <input 
+                                                type="email" 
+                                                id="email" 
+                                                value="ramix1007@mail.ru"
+                                                placeholder="Введите email"
+                                                class="google-disabled-field"
+                                                data-tooltip="При входе через Google это поле заполняется автоматически"
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <div class="form-field">
+                                        <label>
+                                            <i class="fas fa-lock"></i>
+                                            Пароль
+                                        </label>
+                                        <div class="input-wrapper password-wrapper">
+                                            <input 
+                                                type="password" 
+                                                id="password" 
+                                                value="Aramitutu0"
+                                                placeholder="Введите новый пароль"
+                                                class="google-disabled-field"
+                                                data-tooltip="При входе через Google пароль не требуется"
+                                            >
+                                            <button type="button" class="password-toggle">
+                                                <i class="fas fa-eye-slash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-field">
+                                        <label>
+                                            <i class="fas fa-globe"></i>
+                                            Язык интерфейса
+                                        </label>
+                                        <div class="input-wrapper">
+                                            <select id="language">
+                                                <option value="ru">Русский</option>
+                                                <option value="en">English</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="save-changes">
+                                        <i class="fas fa-save"></i>
+                                        Сохранить изменения
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="google-auth-info">
+                        <div class="google-auth-label">
+                            <img src="https://i.postimg.cc/dV9Sw8JB/image.png" alt="Google Logo" class="google-logo">
+                            Аккаунт привязан к Google
+                        </div>
+                    </div>
+
+                    <div class="telegram-notifications">
+                        <div class="telegram-notifications-header">
+                            <img src="https://i.postimg.cc/rsZgDLhF/Telegram-2019-Logo-svg.webp" alt="Telegram Logo" class="telegram-logo">
+                            <div class="telegram-text">
+                                <h3>Уведомления в Telegram</h3>
+                                <p>Подключите новости и уведомления через бота в Telegram</p>
+                            </div>
+                        </div>
+                        <button class="enable-telegram-notifications">
+                            Включить уведомления
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const menuToggle = document.getElementById('menu-toggle');
+        const accountMenu = document.getElementById('account-menu');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+
+        accountMenu.addEventListener('click', (event) => {
+            event.stopPropagation(); // Останавливаем всплытие события
+            dropdownMenu.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!accountMenu.contains(event.target)) {
+                dropdownMenu.classList.remove('active');
+            }
+        });
+
+        // Добавляем обработчики для вложенных подменю
+        document.querySelectorAll('.has-submenu').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.classList.toggle('active');
+                
+                // Находим ближайшее вложенное подменю
+                const nestedSubmenu = this.closest('li').querySelector('.nested-submenu');
+                if (nestedSubmenu) {
+                    nestedSubmenu.classList.toggle('active');
+                }
+            });
+        });
+
+        // Добавляем обработчики для кнопок редактирования
+        document.querySelectorAll('.edit-trigger').forEach(trigger => {
+            trigger.addEventListener('click', function() {
+                const field = this.dataset.field;
+                const input = document.getElementById(field);
+                
+                input.readOnly = !input.readOnly;
+                input.disabled = !input.disabled;
+                
+                if (!input.readOnly) {
+                    input.focus();
+                    input.select();
+                }
+            });
+        });
+
+        // Показ/скрытие пароля
+        document.querySelector('.password-toggle').addEventListener('click', () => {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            
+            document.querySelector('.password-toggle i').classList.toggle('fa-eye');
+            document.querySelector('.password-toggle i').classList.toggle('fa-eye-slash');
+        });
+
+        // Сохранение формы
+        document.getElementById('profileSettings').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Логика сохранения
+            alert('Изменения сохранены');
+        });
+
+        // Отмена изменений
+        document.querySelector('.cancel-changes').addEventListener('click', () => {
+            const form = document.getElementById('profileSettings');
+            const editTriggers = document.querySelectorAll('.edit-trigger');
+            const passwordToggle = document.querySelector('.password-toggle');
+            const passwordInput = document.getElementById('password');
+
+            editTriggers.forEach(trigger => {
+                const field = trigger.dataset.field;
+                const input = document.getElementById(field);
+                
+                input.value = input.dataset.original;
+                input.readOnly = true;
+                input.disabled = true;
+            });
+
+            passwordInput.type = 'password';
+            passwordToggle.querySelector('i').classList.remove('fa-eye');
+            passwordToggle.querySelector('i').classList.add('fa-eye-slash');
+        });
+
+        // Валидация в реальном времени
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', function() {
+                const wrapper = this.closest('.input-wrapper');
+                wrapper.classList.remove('valid', 'invalid');
+                
+                if(this.checkValidity()) {
+                    wrapper.classList.add('valid');
+                } else {
+                    wrapper.classList.add('invalid');
+                }
+            });
+        });
+
+        // Анимация лейблов
+        document.querySelectorAll('.form-field').forEach(field => {
+            field.addEventListener('mouseenter', () => {
+                field.querySelector('label').style.animationPlayState = 'running';
+            });
+            field.addEventListener('mouseleave', () => {
+                field.querySelector('label').style.animationPlayState = 'paused';
+            });
+        });
+
+        // Добавим скрипт для мгновенного редактирования
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('#profileSettings input');
+            const passwordToggle = document.querySelector('.password-toggle');
+
+            // Убираем readonly
+            inputs.forEach(input => {
+                input.removeAttribute('readonly');
+            });
+
+            // Переключение видимости пароля
+            passwordToggle.addEventListener('click', function() {
+                const passwordInput = document.getElementById('password');
+                const icon = this.querySelector('i');
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.classList.replace('fa-eye-slash', 'fa-eye');
+                } else {
+                    passwordInput.type = 'password';
+                    icon.classList.replace('fa-eye', 'fa-eye-slash');
+                }
+            });
+
+            // Валидация и сохранение
+            document.getElementById('profileSettings').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const language = document.getElementById('language').value;
+
+                // Здесь должна быть валидация и отправка на сервер
+                console.log('Данные:', { username, email, password, language });
+                
+                // Временное уведомление
+                alert('Данные обновлены');
+            });
+
+            const isGoogleAuth = true; // Флаг, который должен приходить с бэкенда
+
+            if (isGoogleAuth) {
+                // Блокируем все поля кроме логина
+                const emailInput = document.getElementById('email');
+                const passwordInput = document.getElementById('password');
+                const languageSelect = document.getElementById('language');
+
+                emailInput.setAttribute('disabled', true);
+                passwordInput.setAttribute('disabled', true);
+                languageSelect.setAttribute('disabled', true);
+
+                // Добавляем визуальные подсказки
+                [emailInput, passwordInput, languageSelect].forEach(input => {
+                    input.style.opacity = '0.5';
+                    input.setAttribute('title', 'Недоступно при входе через Google');
+                });
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const googleLoginBtn = document.querySelector('.google-login-btn');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+
+            googleLoginBtn.addEventListener('click', () => {
+                // Логика входа через Google
+                // Здесь будет ваша реализация OAuth
+            });
+
+            // Опционально: блокировка полей при входе через Google
+            emailInput.addEventListener('focus', (e) => {
+                if (googleLoginBtn.classList.contains('active')) {
+                    e.target.blur();
+                }
+            });
+
+            passwordInput.addEventListener('focus', (e) => {
+                if (googleLoginBtn.classList.contains('active')) {
+                    e.target.blur();
+                }
+            });
+        });
+
+        // Функция генерации логина из email при входе через Google
+        function generateUsernameFromEmail(email) {
+            // Берем часть email до @
+            const username = email.split('@')[0];
+            
+            // Транслитерация и очистка от спецсимволов
+            const transliteratedUsername = transliterate(username);
+            
+            // Добавляем случайные цифры для уникальности
+            const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+            
+            return `${transliteratedUsername}${randomSuffix}`;
+        }
+
+        // Транслитерация кириллицы
+        function transliterate(text) {
+            const transliterationMap = {
+                'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 
+                'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z', 'и': 'i', 
+                'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 
+                'о': 'o', 'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 
+                'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 
+                'ш': 'sh', 'щ': 'shch', 'ъ': '', 'ы': 'y', 'ь': '', 
+                'э': 'e', 'ю': 'yu', 'я': 'ya'
+            };
+
+            return text.toLowerCase().split('').map(char => 
+                transliterationMap[char] || char
+            ).join('').replace(/[^a-z0-9]/g, '');
+        }
+
+        // Пример использования при входе через Google
+        async function handleGoogleSignIn() {
+            try {
+                // Firebase Google Sign-In
+                const provider = new firebase.auth.GoogleAuthProvider();
+                const result = await firebase.auth().signInWithPopup(provider);
+                
+                // Получаем email и генерируем логин
+                const email = result.user.email;
+                const generatedUsername = generateUsernameFromEmail(email);
+                
+                // Сохраняем пользователя в базе данных
+                await firebase.firestore().collection('users').doc(result.user.uid).set({
+                    email: email,
+                    username: generatedUsername,
+                    provider: 'google',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                // Обновляем UI
+                document.getElementById('username').value = generatedUsername;
+                document.getElementById('email').value = email;
+                
+            } catch (error) {
+                console.error("Ошибка входа через Google:", error);
+            }
+        }
+    </script>
+</body>
+</html>

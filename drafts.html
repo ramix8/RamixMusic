@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Черновики - Ramix Music</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        :root {
+            --accent: #FF9763;
+            --dark: #0A0A0A;
+            --gray: #1A1A1A;
+            --light: #FFFFFF;
+            --light-gray: #F0F0F0;
+            --button-bg: rgba(255,255,255,0.1);
+        }
+
+        /* Стили для страницы черновиков */
+        .drafts-page {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-description {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 0 1rem;
+        }
+
+        .page-description h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 0.8rem;
+        }
+
+        .page-description h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .page-description h5 {
+            font-size: 1rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .drafts-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .draft-item {
+            background: var(--gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .draft-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+
+        .draft-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .draft-cover {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .draft-cover i {
+            font-size: 2rem;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .draft-details h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.2rem;
+        }
+
+        .draft-details p {
+            margin: 0;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+        }
+
+        .draft-date {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .draft-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .draft-actions button {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .draft-actions button:hover {
+            background: rgba(255,151,99,0.1);
+        }
+
+        .draft-actions button i {
+            margin-right: 0.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: rgba(255,255,255,0.2);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: var(--dark);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255,151,99,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="drafts-page">
+        <div class="page-description">
+            <h1>Черновики</h1>
+            <h5>Здесь хранятся ваши незавершенные релизы</h5>
+        </div>
+        
+        <div class="drafts-container">
+            <div class="draft-item" data-id="draft-1">
+                <div class="draft-info">
+                    <div class="draft-cover">
+                        <img src="https://i.postimg.cc/Y9Zy8cDz/draft-cover-1.jpg" alt="Черновик 1">
+                    </div>
+                    <div class="draft-details">
+                        <h3>Новый сингл</h3>
+                        <p>Тип: Сингл • Треков: 1</p>
+                        <div class="draft-date">Сохранен: 15.06.2023</div>
+                    </div>
+                </div>
+                <div class="draft-actions">
+                    <button class="edit-draft"><i class="fas fa-edit"></i>Редактировать</button>
+                    <button class="delete-draft"><i class="fas fa-trash-alt"></i>Удалить</button>
+                </div>
+            </div>
+            
+            <div class="draft-item" data-id="draft-2">
+                <div class="draft-info">
+                    <div class="draft-cover">
+                        <img src="https://i.postimg.cc/3NvQPv4X/draft-cover-2.jpg" alt="Черновик 2">
+                    </div>
+                    <div class="draft-details">
+                        <h3>Летний EP</h3>
+                        <p>Тип: EP • Треков: 3</p>
+                        <div class="draft-date">Сохранен: 10.06.2023</div>
+                    </div>
+                </div>
+                <div class="draft-actions">
+                    <button class="edit-draft"><i class="fas fa-edit"></i>Редактировать</button>
+                    <button class="delete-draft"><i class="fas fa-trash-alt"></i>Удалить</button>
+                </div>
+            </div>
+            
+            <div class="draft-item" data-id="draft-3">
+                <div class="draft-info">
+                    <div class="draft-cover">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="draft-details">
+                        <h3>Без названия</h3>
+                        <p>Тип: Не выбран • Треков: 0</p>
+                        <div class="draft-date">Сохранен: 05.06.2023</div>
+                    </div>
+                </div>
+                <div class="draft-actions">
+                    <button class="edit-draft"><i class="fas fa-edit"></i>Редактировать</button>
+                    <button class="delete-draft"><i class="fas fa-trash-alt"></i>Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Подключаем sidebar.js для единой боковой панели -->
+    <script src="../js/sidebar.js"></script>
+</body>
+</html>

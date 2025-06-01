@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход - Ramix Music</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="https://i.postimg.cc/dVFvVqyz/image.png" type="image/png">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/auth.css">
+    <style>
+        :root {
+            --accent-color: #FF9763;
+            --bg-color: #0A0A0A;
+            --text-color: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .logo {
+            height: 80px; /* Еще уменьшенный размер логотипа */
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 2px 8px rgba(255, 151, 99, 0.3));
+            max-width: 200px; /* Еще уменьшенный максимальный размер логотипа */
+            margin-bottom: 2rem;
+        }
+
+        .logo img {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 151, 99, 0.2);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 1s ease-out;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, #FF9763 30%, #FF6B6B 70%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form label {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .form input {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .form button {
+            padding: 1rem 2rem;
+            background: var(--accent-color);
+            color: var(--bg-color);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(255, 151, 99, 0.2);
+            font-size: 1.2rem;
+        }
+
+        .form button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(255, 151, 99, 0.35);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .register-link a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .register-link a:hover {
+            color: #FF6B6B;
+        }
+
+        #error-message {
+            color: #ff6b6b;
+            text-align: center;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .google-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px; /* Увеличен размер кнопки */
+            border-radius: 10px;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .google-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .google-icon {
+            width: 24px; /* Увеличен размер иконки */
+            height: 24px; /* Увеличен размер иконки */
+            background: url('https://i.postimg.cc/BPXvc5ZT/google-icon.png') no-repeat center center;
+            background-size: contain;
+        }
+
+        .success-message {
+            color: #4CAF50;
+            text-align: center;
+            margin: 1rem 0;
+            padding: 10px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 8px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h2 {
+                font-size: 2rem;
+            }
+
+            .form button {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-page">
+        <a href="/" class="auth-logo">
+            <img src="https://i.postimg.cc/hJJc0YcN/ramix-logo.png" 
+                 alt="Ramix Music"
+                 srcset="https://i.postimg.cc/hJJc0YcN/ramix-logo.png 1x,
+                         https://i.postimg.cc/hJJc0YcN/ramix-logo.png 2x">
+        </a>
+        
+        <div class="auth-container">
+            <h2 class="auth-title">Вход в аккаунт</h2>
+            
+            <div id="error-message" class="error-message"></div>
+            <div id="success-message" class="success-message"></div>
+            
+            <form id="login-form" class="auth-form">
+                <label for="email">Email</label>
+                <input type="email" id="email" class="input-field" required>
+                
+                <label for="password">Пароль</label>
+                <input type="password" id="password" class="input-field" required>
+                
+                <button type="submit" class="btn">Войти</button>
+            </form>
+            
+            <div class="social-login">
+                <div class="social-login-title">или войти через</div>
+                <div id="google-login" class="google-btn">
+                    <div class="google-icon"></div>
+                    <span>Войти с Google</span>
+                </div>
+            </div>
+            
+            <div class="auth-link">
+                Нет аккаунта? <a href="register.html">Зарегистрироваться</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
+    
+    <!-- Подключаем наши скрипты -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем, авторизован ли пользователь
+            checkAuthState(user => {
+                if (user) {
+                    // Если пользователь уже авторизован, перенаправляем в личный кабинет
+                    window.location.href = '../lk/main.html';
+                }
+            });
+            
+            // Обработка входа через форму
+            const loginForm = document.getElementById('login-form');
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+                // Скрываем предыдущие сообщения
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+                
+                // Вход пользователя
+                const result = await loginUser(email, password);
+                
+                if (result.success) {
+                    // Показываем сообщение об успехе
+                    successMessage.textContent = 'Вход выполнен успешно!';
+                    successMessage.style.display = 'block';
+                    
+                    // Перенаправляем в личный кабинет
+                    setTimeout(() => {
+                        window.location.href = '../lk/main.html';
+                    }, 1000);
+                } else {
+                    // Показываем сообщение об ошибке
+                    errorMessage.textContent = result.error;
+                    errorMessage.style.display = 'block';
+                }
+            });
+            
+            // Обработка входа через Google
+            const googleLoginBtn = document.getElementById('google-login');
+            
+            googleLoginBtn.addEventListener('click', async function() {
+                // Скрываем предыдущие сообщения
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+                
+                // Вход через Google
+                const result = await signInWithGoogle();
+                
+                if (result.success) {
+                    // Показываем сообщение об успехе
+                    successMessage.textContent = 'Вход выполнен успешно!';
+                    successMessage.style.display = 'block';
+                    
+                    // Перенаправляем в личный кабинет
+                    setTimeout(() => {
+                        window.location.href = '../lk/main.html';
+                    }, 1000);
+                } else {
+                    // Показываем сообщение об ошибке
+                    errorMessage.textContent = result.error;
+                    errorMessage.style.display = 'block';
+                }
+                });
+        });
+    </script>
+</body>
+</html>

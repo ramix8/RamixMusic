@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет - Ramix Music</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="https://i.postimg.cc/dVFvVqyz/image.png" type="image/png">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        :root {
+            --accent: #FF9763;
+            --dark: #0A0A0A;
+            --gray: #1A1A1A;
+            --light: #FFFFFF;
+            --light-gray: #F0F0F0;
+            --button-bg: rgba(255,255,255,0.1);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: var(--dark);
+            color: white;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        /* Стили для полосы прокрутки - более специфичные */
+        body::-webkit-scrollbar,
+        .sidebar-nav::-webkit-scrollbar,
+        .app-content::-webkit-scrollbar,
+        *::-webkit-scrollbar {
+            width: 8px;
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        body::-webkit-scrollbar-thumb,
+        .sidebar-nav::-webkit-scrollbar-thumb,
+        .app-content::-webkit-scrollbar-thumb,
+        *::-webkit-scrollbar-thumb {
+            background-color: var(--accent);
+            border-radius: 4px;
+        }
+
+        body::-webkit-scrollbar-track,
+        .sidebar-nav::-webkit-scrollbar-track,
+        .app-content::-webkit-scrollbar-track,
+        *::-webkit-scrollbar-track {
+            background-color: var(--dark);
+        }
+
+        .app-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4rem 2rem;
+            margin-left: 220px;
+        }
+
+        .content-wrapper {
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .page-description {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-description h1 {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+
+        .page-description h5 {
+            font-size: 1rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .page-description .attention {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .promo-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .promo-card {
+            background: var(--gray);
+            border: none;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            width: 200px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .promo-card img {
+            width: 70%;
+            border-radius: 8px;
+        }
+
+        .promo-card h5 {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .promo-card a {
+            display: inline-block;
+            background: var(--button-bg);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: transform 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .promo-card a:hover {
+            transform: scale(1.05);
+        }
+
+        .promo-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .badge {
+            background: var(--accent);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 175px;
+            background: var(--dark);
+            padding: 1.5rem 0;
+            z-index: 999;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            transform: translateX(0);
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-175px);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .sidebar-logo {
+            width: 85px;
+            height: auto;
+            opacity: 0.9;
+        }
+
+        .sidebar-nav {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 0 0.5rem;
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.25rem;
+        }
+
+        .sidebar-nav li a {
+            display: flex;
+            align-items: center;
+            padding: 0.7rem 1rem;
+            color: rgba(255,255,255,0.75);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-weight: 400;
+            font-size: 0.95rem;
+            border-radius: 8px;
+        }
+
+        .sidebar-nav li a:hover {
+            background: rgba(255,255,255,0.05);
+            color: white;
+        }
+
+        .sidebar-nav li a.active {
+            background: var(--accent-color);
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .sidebar-nav li a i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .extra-menu {
+            margin-top: auto;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 1rem;
+        }
+
+        .sidebar-footer {
+            padding: 1rem 0.5rem;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.05);
+            padding: 0.5rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+        }
+
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .user-name {
+            font-weight: 400;
+            color: white;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: left;
+        }
+
+        .logout-btn {
+            background: transparent;
+            color: rgba(255,255,255,0.7);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.05);
+            color: white;
+        }
+
+        .logout-btn i {
+            margin-right: 5px;
+        }
+
+        .menu-toggle {
+            position: fixed;
+            left: 1.5rem;
+            top: 2rem;
+            z-index: 1000;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.8s ease forwards;
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var (--accent);
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        .header-logo {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            height: 50px;
+            z-index: 999;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            transition: all 0.3s ease;
+            animation: fadeIn 0.8s ease forwards;
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+
+        @media (max-width: 1200px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.collapsed {
+                transform: translateX(0);
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .header-logo {
+                left: 5rem;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .app-content {
+                margin-left: 0;
+            }
+            
+            .quick-actions-grid {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+
+        @media (min-width: 1201px) {
+            body {
+                padding-left: 175px;
+            }
+            
+            .sidebar {
+                transform: translateX(0);
+            }
+            
+            .app-content {
+                margin-left: 0;
+            }
+            
+            .header-logo {
+                display: none;
+            }
+            
+            .menu-toggle {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-content {
+                padding: 2rem 1rem;
+            }
+            
+            .dashboard-content {
+                padding: 0 1rem;
+            }
+            
+            .welcome-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.5rem;
+            }
+            
+            .welcome-text h2 {
+                font-size: 1.2rem;
+            }
+            
+            .welcome-text p {
+                font-size: 0.9rem;
+            }
+            
+            .news-section, 
+            .releases-section {
+                padding: 1.5rem;
+            }
+            
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .upload-header-button {
+                right: 5rem;
+                padding: 0.5rem;
+            }
+            
+            .upload-header-button span {
+                display: none;
+            }
+        }
+
+        .account-menu {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--button-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            animation: fadeIn 0.8s ease forwards;
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+
+        .account-menu:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .account-menu span {
+            margin-right: 0.5rem;
+            color: var(--accent);
+        }
+
+        .upload-header-button {
+            position: fixed;
+            top: 1.5rem;
+            right: 10rem;
+            background: var(--accent);
+            color: var(--dark);
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            animation: fadeIn 0.8s ease forwards;
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+
+        @media (max-width: 768px) {
+            .upload-header-button {
+                right: 5rem;
+                padding: 0.5rem;
+            }
+            
+            .upload-header-button span {
+                display: none;
+            }
+        }
+
+        .theme-toggle {
+            position: relative;
+            top: auto;
+            right: auto;
+            background: var(--gray);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            margin-right: 1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: var(--gray);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 0.8rem 1.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--accent);
+        }
+
+        /* Новые стили для новостей и релизов */
+        .dashboard-content {
+            max-width: 1300px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        /* Секция новостей */
+        .news-section {
+            background: linear-gradient(145deg, rgba(40,40,40,0.95), rgba(25,25,25,0.95));
+            border-radius: 16px;
+            padding: 3rem 4rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            margin-bottom: 3rem;
+            width: 100%;
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+
+        .news-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            color: var(--accent);
+            position: relative;
+            padding-left: 2.5rem;
+        }
+
+        .news-section h2:before {
+            content: '\f1ea';
+            font-family: 'Font Awesome 5 Free';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent);
+            font-size: 1.8rem;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .news-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 2.5rem 3rem;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+            border: 1px solid rgba(255,255,255,0.05);
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 0.7s;
+            opacity: 0;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .news-date {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--accent);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .news-date i {
+            font-size: 1.1rem;
+        }
+
+        .news-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .news-content {
+            color: rgba(255,255,255,0.8);
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        /* Секция релизов */
+        .releases-section {
+            background: linear-gradient(145deg, rgba(40,40,40,0.95), rgba(25,25,25,0.95));
+            border-radius: 16px;
+            padding: 3rem 4rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            width: 100%;
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 0.5s;
+            opacity: 0;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 5rem 4rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border: 1px dashed rgba(255,255,255,0.1);
+            animation: fadeInUp 0.8s ease forwards;
+            animation-delay: 0.9s;
+            opacity: 0;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .empty-state p {
+            color: rgba(255,255,255,0.6);
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        .news-badge {
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: var(--accent);
+            color: white;
+            padding: 5px 35px;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: 700;
+            box-shadow: 0 2px 12px rgba(255,151,99,0.3);
+        }
+
+        .news-list {
+            margin: 1rem 0 0 1rem;
+            padding: 0;
+            list-style: none;
+        }
+
+        .news-list li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .news-list li i {
+            position: absolute;
+            left: 0;
+            top: 3px;
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-content {
+                padding: 0 1rem;
+            }
+            
+            .news-section, 
+            .releases-section {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        /* Анимации для загрузки страницы */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Стили для вложенного подменю */
+        .nested-submenu {
+            display: none;
+            padding-left: 1rem;
+            list-style: none;
+            margin-top: 0.5rem;
+        }
+        
+        .nested-submenu.active {
+            display: block;
+            animation: fadeIn 0.3s ease forwards;
+        }
+        
+        .has-submenu {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .has-submenu .badge {
+            margin-left: auto;
+            font-size: 0.7rem;
+            padding: 0.1rem 0.4rem;
+            background: var(--accent);
+            color: var(--dark);
+            border-radius: 10px;
+        }
+        
+        .has-submenu:after {
+            content: '\f105';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            margin-left: auto;
+            transition: transform 0.3s;
+        }
+        
+        .has-submenu.active:after {
+            transform: rotate(90deg);
+        }
+        
+        /* Анимация для плавного появления подменю */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .nested-submenu.active {
+            animation: slideDown 0.3s ease forwards;
+        }
+        
+        /* Стили для активного состояния родительского пункта */
+        .has-submenu.active {
+            color: var(--accent);
+            background: linear-gradient(90deg, rgba(255,151,99,0.1) 0%, rgba(255,151,99,0) 100%);
+        }
+        
+        /* Дополнительные стили для бейджей в меню */
+        .sidebar-nav li a .badge {
+            margin-left: auto;
+            font-size: 0.7rem;
+            padding: 0.1rem 0.4rem;
+            background: var(--accent);
+            color: var(--dark);
+            border-radius: 10px;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 220px;
+            padding: 2rem;
+            transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .main-content.full-width {
+            margin-left: 0;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--accent-color);
+        }
+
+        .dashboard-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .welcome-section {
+            margin-bottom: 2rem;
+        }
+        
+        .welcome-card {
+            background: linear-gradient(135deg, rgba(51, 36, 32, 0.9), rgba(41, 30, 28, 0.9));
+            border-radius: 15px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .welcome-icon {
+            font-size: 2rem;
+            color: var(--accent-color);
+            background: rgba(255, 151, 99, 0.2);
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .welcome-text h2 {
+            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+            color: var(--accent-color);
+        }
+        
+        .welcome-text p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+        }
+        
+        .news-section, .quick-actions-section, .releases-section {
+            margin-bottom: 3rem;
+        }
+        
+        .news-section h2, .quick-actions-section h2, .releases-section h2 {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+        
+        .news-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .news-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            border: 1px solid rgba(255, 151, 99, 0.2);
+        }
+        
+        .news-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .news-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent-color);
+            color: var(--dark);
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .news-title {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .news-content {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .news-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 0.5rem;
+        }
+        
+        .news-list li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .news-list li i {
+            color: var(--accent-color);
+        }
+        
+        .quick-actions-section {
+            margin-top: 3rem;
+        }
+        
+        .quick-actions-section h2 {
+            color: var(--accent-color);
+            font-size: 1.4rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+        
+        .quick-action-card {
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-action-card:hover {
+            transform: translateY(-5px);
+            background: rgba(41, 41, 41, 0.8);
+        }
+        
+        .quick-action-icon {
+            font-size: 2.2rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        
+        .quick-action-card h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+        }
+        
+        .quick-action-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .view-all {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .view-all:hover {
+            text-decoration: underline;
+        }
+        
+        .releases-container {
+            min-height: 200px;
+        }
+        
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.2);
+            margin-bottom: 1rem;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .empty-state p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+            max-width: 400px;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-220px);
+            }
+            
+            .sidebar.collapsed {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+            
+            .welcome-card {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.5rem;
+            }
+            
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+        }
+
+        /* Стили для индикатора загрузки */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            width: 100%;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--accent);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Стили для активных ссылок в навигации */
+        .nav-link.active {
+            background: var(--accent) !important;
+            color: var(--dark) !important;
+            font-weight: 500;
+        }
+
+        /* Стили для сообщений об ошибке */
+        .error-message {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255,0,0,0.1);
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .error-message i {
+            font-size: 3rem;
+            color: rgba(255,0,0,0.7);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Боковая панель -->
+        <!-- Боковая панель будет добавлена через sidebar.js -->
+
+        
+
+        
+        
+        <a href="#upload" class="upload-header-button nav-link" data-page="upload">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span>Загрузить</span>
+        </a>
+
+        
+        
+        <!-- Основной контент -->
+        <div class="main-content" id="main-content">
+            <div class="top-bar">
+                <h1 class="page-title" id="page-title">Главная</h1>
+            </div>
+            
+            <!-- Контейнер для динамически загружаемого контента -->
+            <div id="content-container">
+                <!-- Здесь будет загружаться содержимое компонентов -->
+                <div class="dashboard-content">
+                    <!-- Секция приветствия -->
+                    <section class="welcome-section">
+                        <div class="welcome-card">
+                            <div class="welcome-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="welcome-text">
+                                <h2>Добро пожаловать в личный кабинет!</h2>
+                                <p>Здесь вы можете управлять своими релизами, отслеживать статистику и продвигать свою музыку.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Секция новостей -->
+                    <section class="news-section">
+                        <h2>Последние новости</h2>
+                        <div class="news-grid">
+                            <article class="news-card">
+                                <div class="news-date">
+                                    <i class="fas fa-rocket"></i>
+                                    <span id="current-date">XX.XX.2023</span>
+                                </div>
+                                <div class="news-badge">Новое!</div>
+                                <h3 class="news-title">Мы официально открылись! 🎉</h3>
+                                <div class="news-content">
+                                    <p>Добро пожаловать в Ramix Music! Теперь вы можете:</p>
+                                    <ul class="news-list">
+                                        <li><i class="fas fa-check-circle"></i> Загружать неограниченное количество треков</li>
+                                        <li><i class="fas fa-check-circle"></i> Получать детальную аналитику</li>
+                                        <li><i class="fas fa-check-circle"></i> Использовать профессиональные инструменты продвижения</li>
+                                    </ul>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <!-- Секция быстрых действий -->
+                    <section class="quick-actions-section">
+                        <h2>Быстрые действия</h2>
+                        <div class="quick-actions-grid">
+                            <a href="#upload" class="quick-action-card nav-link" data-page="upload">
+                                <div class="quick-action-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <h3>Загрузить релиз</h3>
+                                <p>Загрузите новый трек или альбом</p>
+                            </a>
+                            <a href="#releases" class="quick-action-card nav-link" data-page="releases">
+                                <div class="quick-action-icon">
+                                    <i class="fas fa-music"></i>
+                                </div>
+                                <h3>Мои релизы</h3>
+                                <p>Просмотр всех ваших релизов</p>
+                            </a>
+                            <a href="#promo" class="quick-action-card nav-link" data-page="promo">
+                                <div class="quick-action-icon">
+                                    <i class="fas fa-bullhorn"></i>
+                                </div>
+                                <h3>Продвижение</h3>
+                                <p>Инструменты для продвижения</p>
+                            </a>
+                        </div>
+                    </section>
+
+                    <!-- Секция релизов -->
+                    <section class="releases-section">
+                        <div class="section-header">
+                            <h2>Ваши релизы</h2>
+                            <a href="#releases" class="view-all nav-link" data-page="releases">Смотреть все</a>
+                        </div>
+                        <div id="recent-releases" class="releases-container">
+                            <div class="empty-state">
+                                <i class="fas fa-music"></i>
+                                <h3>Пока нет релизов</h3>
+                                <p>Начните свой музыкальный путь — загрузите первый трек или альбом, чтобы он появился здесь.</p>
+                                <a href="#upload" class="btn nav-link" data-page="upload">Загрузить релиз</a>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
+    
+    <!-- Подключаем наши скрипты -->
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/dashboard.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация аутентификации
+            checkAuthState(user => {
+                if (!user) {
+                    window.location.href = '../auth/login.html';
+                } else {
+                    // Отображаем имя пользователя и аватар
+                    const userNameElement = document.getElementById('user-name');
+                    if (userNameElement) {
+                        userNameElement.textContent = user.displayName || user.email;
+                    }
+                    
+                    const userAvatarElement = document.getElementById('user-avatar');
+                    if (userAvatarElement) {
+                        if (user.photoURL) {
+                            userAvatarElement.innerHTML = '';
+                            const img = document.createElement('img');
+                            img.src = user.photoURL;
+                            img.alt = user.displayName || 'User';
+                            img.style.width = '100%';
+                            img.style.height = '100%';
+                            img.style.borderRadius = '50%';
+                            img.style.objectFit = 'cover';
+                            userAvatarElement.appendChild(img);
+                        } else {
+                            const initial = (user.displayName || user.email)[0].toUpperCase();
+                            userAvatarElement.textContent = initial;
+                        }
+                    }
+                }
+            });
+            
+            // Обработка меню аккаунта
+            const accountMenu = document.getElementById('account-menu');
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            
+            if (accountMenu && dropdownMenu) {
+                accountMenu.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    dropdownMenu.classList.toggle('active');
+                });
+                
+                document.addEventListener('click', (event) => {
+                    if (!accountMenu.contains(event.target)) {
+                        dropdownMenu.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Обработчик для кнопки выхода
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async () => {
+                    const result = await logoutUser();
+                    if (result.success) {
+                        window.location.href = '../auth/login.html';
+                    }
+                });
+            }
+            
+            // Обработка боковой панели на мобильных устройствах
+            const menuToggle = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            
+            if (menuToggle && sidebar) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('collapsed');
+                    menuToggle.classList.toggle('active');
+                    if (mainContent) {
+                        mainContent.classList.toggle('full-width');
+                    }
+                });
+            }
+            
+            // Установка текущей даты
+            const currentDateElement = document.getElementById('current-date');
+            if (currentDateElement) {
+                const now = new Date();
+                const day = String(now.getDate()).padStart(2, '0');
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const year = now.getFullYear();
+                currentDateElement.textContent = `${day}.${month}.${year}`;
+            }
+        });
+    </script>
+    <!-- Подключаем sidebar.js для единой боковой панели -->
+    
+
+    <!-- Подключаем скрипт боковой панели последним, чтобы функции страницы были уже определены -->
+    <script src="../js/sidebar.js"></script>
+</body>
+</html>```
